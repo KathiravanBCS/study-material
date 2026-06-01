@@ -1,0 +1,165 @@
+/* Sidebar Container */
+.sidebarContainer {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--mantine-color-white);
+  border-right: 1px solid var(--mantine-color-gray-2);
+}
+
+/* Header Section */
+.sidebarHeader {
+  padding: var(--mantine-spacing-md);
+  border-bottom: 1px solid var(--mantine-color-gray-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-xs);
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-sm);
+}
+
+.logoText {
+  font-weight: 700;
+  font-size: var(--mantine-font-size-sm);
+  color: var(--mantine-color-dark);
+}
+
+.logoSubtext {
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-dimmed);
+}
+
+.toggleButton {
+  padding: var(--mantine-spacing-xs);
+  border-radius: var(--mantine-radius-sm);
+  color: var(--mantine-color-gray-6);
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.toggleButton:hover {
+  background-color: var(--mantine-color-gray-0);
+}
+
+/* Content Section */
+.navItems {
+  padding: var(--mantine-spacing-xs);
+}
+
+.navSection {
+  margin-bottom: var(--mantine-spacing-md);
+}
+
+.sectionHeader {
+  display: block;
+  width: 100%;
+  padding: var(--mantine-spacing-sm) var(--mantine-spacing-md);
+  border-radius: var(--mantine-radius-sm);
+  transition: all 150ms ease;
+  cursor: pointer;
+}
+
+.sectionHeader:hover {
+  background-color: var(--mantine-color-gray-0);
+}
+
+.sectionTitle {
+  font-size: var(--mantine-font-size-xs);
+  font-weight: 700;
+  color: var(--mantine-color-gray-6);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-xs);
+}
+
+/* Navigation Links */
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-sm);
+  width: 100%;
+  padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
+  margin-bottom: var(--mantine-spacing-xs);
+  border-radius: var(--mantine-radius-sm);
+  transition: all 150ms ease;
+  text-decoration: none;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+}
+
+.navLink:hover {
+  background-color: var(--mantine-color-gray-0);
+  color: var(--mantine-color-blue-7);
+}
+
+.navLink[data-active="true"] {
+  background-color: var(--mantine-color-blue-0);
+  border-left-color: var(--mantine-color-blue-6);
+  padding-left: calc(var(--mantine-spacing-md) - 3px);
+  color: var(--mantine-color-blue-7);
+}
+
+.navLink[data-active="true"]:hover {
+  background-color: var(--mantine-color-blue-1);
+}
+
+/* Add Topic Button */
+.addTopicButton {
+  display: block;
+  width: 100%;
+  padding: var(--mantine-spacing-xs);
+  border-radius: var(--mantine-radius-sm);
+  transition: all 150ms ease;
+  cursor: pointer;
+}
+
+.addTopicButton:hover {
+  background-color: var(--mantine-color-blue-0);
+}
+
+/* User Menu Button */
+.userMenuButton {
+  width: 100%;
+  padding: var(--mantine-spacing-sm);
+  border-radius: var(--mantine-radius-md);
+  transition: background-color 150ms ease;
+  display: block;
+  cursor: pointer;
+}
+
+.userMenuButton:hover {
+  background-color: var(--mantine-color-gray-0);
+}
+
+.userDetails {
+  flex: 1;
+  min-width: 0;
+}
+
+.userName {
+  font-weight: 600;
+  font-size: var(--mantine-font-size-sm);
+  color: var(--mantine-color-dark);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.userEmail {
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-dimmed);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.userAvatar {
+  margin: 0 auto;
+}

@@ -74,7 +74,7 @@ function ChildComponent({
   );
 }
 
-function ParentComponent() {
+export function ParentComponent() {
   const [user, setUser] = useState({ name: "John Doe", age: 25 });
   const [theme, setTheme] = useState<"light" | "dark">("light");
 

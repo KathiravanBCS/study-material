@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 /**
  * LifeCycleDemo Component
@@ -15,12 +15,6 @@ export const LifeCycleDemo = () => {
   const [time, setTime] = useState(0);
   const [logs, setLogs] = useState<string[]>([]);
   const [isRunning, setIsRunning] = useState(false);
-
-  // Helper function to add logs to state
-  const addLog = (message: string) => {
-    const timestamp = new Date().toLocaleTimeString();
-    setLogs((prev) => [...prev.slice(-7), `[${timestamp}] ${message}`]);
-  };
 
   // Increment counter
   const increment = () => {

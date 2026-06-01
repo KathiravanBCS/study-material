@@ -169,7 +169,7 @@ export default function Immutability() {
     logs.push('New object created - Immutable approach!');
 
     logs.push('\n📌 Adding new properties:');
-    let person3 = { name: "Kathir" };
+    let person3: { name: string; city?: string } = { name: "Kathir" };
     logs.push(`Original: ${JSON.stringify(person3)}`);
 
     person3 = { ...person3, city: "India" };

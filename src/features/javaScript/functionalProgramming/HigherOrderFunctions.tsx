@@ -2,10 +2,6 @@ import { useState } from "react";
 import SyntaxHighlightedCode from "../../react/components/SyntaxHighlightedCode";
 import "../styles/HigherOrderFunctions.css";
 
-interface CodeExample {
-  title: string;
-  code: string;
-}
 
 export default function HigherOrderFunctions() {
   const [outputs, setOutputs] = useState<{ [key: string]: string }>({});

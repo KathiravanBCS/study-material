@@ -1,5 +1,5 @@
 import { DocumentationBox } from "../components/DocumentationBox";
-import { UseMemoApproach , UseEffectApproach } from "../components/demos/UseMemoDemo";
+import { UseEffectApproach } from "../components/demos/UseMemoDemo";
 
 export function UseMemoGuide() {
   return (

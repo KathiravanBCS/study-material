@@ -5,13 +5,14 @@ import { Outlet, useNavigate, useLocation } from 'react-router-dom'
 import atomLogo from '../assets/atom.png'
 import classes from './Layout.module.css'
 import { navigationData } from './navigationConfig'
+import type { NavItem } from './navigationConfig'
 
 export function AppLayout() {
   const navigate = useNavigate()
   const location = useLocation()
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false)
   const [searchQuery, setSearchQuery] = useState<string>('')
-  const [expandedItems, setExpandedItems] = useState<string[]>(['Hooks'])
+  const [expandedItems, setExpandedItems] = useState<string[]>(['JavaScript', 'JavaScript/Basics', 'React'])
 
   const currentPath = location.hash.slice(1) || '/'
 
@@ -36,6 +37,103 @@ export function AppLayout() {
       link.label.toLowerCase().includes(searchLower)
     )
   }, [searchQuery])
+
+  // True if this item or any of its descendants is the active route
+  const containsActivePath = (item: NavItem): boolean => {
+    if (item.path && item.path === currentPath) return true
+    return !!item.children?.some(containsActivePath)
+  }
+
+  // Recursively render a navigation item and its (possibly nested) children.
+  // keyPath uniquely identifies a node by its ancestor chain so labels that
+  // repeat across branches (e.g. "Basics" under both JavaScript and React)
+  // expand/collapse independently.
+  const renderNavItem = (item: NavItem & { icon?: React.ReactNode }, depth: number, parentKey = '') => {
+    const keyPath = parentKey ? `${parentKey}/${item.label}` : item.label
+    const hasChildren = !!item.children?.length
+    const isActive = currentPath === item.path
+
+    if (!hasChildren) {
+      return (
+        <UnstyledButton
+          key={item.path || keyPath}
+          onClick={() => handleNavigation(item.path)}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '8px 12px',
+            paddingLeft: `${12 + depth * 12}px`,
+            borderRadius: '6px',
+            backgroundColor: isActive ? 'var(--mantine-color-blue-0)' : 'transparent',
+            border: isActive ? '2px solid var(--mantine-color-blue-6)' : '2px solid transparent',
+            transition: 'all 150ms ease',
+            cursor: 'pointer',
+            textAlign: 'left'
+          }}
+        >
+          {item.icon && (
+            <ThemeIcon size={28} variant="light" color={isActive ? 'blue' : 'gray'}>
+              {item.icon}
+            </ThemeIcon>
+          )}
+          <Text size="sm" fw={isActive ? 600 : 400} c={isActive ? 'blue' : 'inherit'}>
+            {item.label}
+          </Text>
+        </UnstyledButton>
+      )
+    }
+
+    const isExpanded = expandedItems.includes(keyPath)
+    const branchActive = containsActivePath(item)
+
+    return (
+      <div key={keyPath}>
+        <UnstyledButton
+          onClick={() => toggleExpand(keyPath)}
+          className={depth === 0 ? classes.navLink : undefined}
+          data-active={depth === 0 ? branchActive.toString() : undefined}
+          style={
+            depth === 0
+              ? undefined
+              : {
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  width: '100%',
+                  padding: '8px 12px',
+                  paddingLeft: `${12 + depth * 12}px`,
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  textAlign: 'left'
+                }
+          }
+        >
+          {item.icon && (
+            <ThemeIcon size={28} variant="light" color={branchActive ? 'blue' : 'gray'}>
+              {item.icon}
+            </ThemeIcon>
+          )}
+          <Text size="sm" fw={branchActive ? 600 : 400} c={branchActive ? 'blue' : 'inherit'} style={{ flex: 1 }}>
+            {item.label}
+          </Text>
+          <ChevronDown
+            size={18}
+            style={{
+              transform: isExpanded ? 'rotate(0deg)' : 'rotate(-90deg)',
+              transition: 'transform 200ms ease'
+            }}
+          />
+        </UnstyledButton>
+
+        <Collapse in={isExpanded}>
+          <Stack gap={0} pl="xs" py="xs">
+            {item.children!.map((child) => renderNavItem(child, depth + 1, keyPath))}
+          </Stack>
+        </Collapse>
+      </div>
+    )
+  }
 
   return (
     <AppShell
@@ -155,9 +253,9 @@ export function AppLayout() {
               filteredNavigationData.map((link) => {
                 const isActive: boolean = currentPath === link.path
                 return (
-                  <Tooltip key={link.path} label={link.label} position="right" withArrow>
+                  <Tooltip key={link.path || link.label} label={link.label} position="right" withArrow>
                     <UnstyledButton
-                      onClick={() => handleNavigation(link.path)}
+                      onClick={() => (link.children ? setIsCollapsed(false) : handleNavigation(link.path))}
                       style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -180,76 +278,8 @@ export function AppLayout() {
                 )
               })
             ) : (
-              // Expanded view - full menu
-              filteredNavigationData.map((link) => {
-                const isActive: boolean = currentPath === link.path
-                const isExpanded = expandedItems.includes(link.label)
-
-                return (
-                  <div key={link.label}>
-                    <UnstyledButton
-                      onClick={() => {
-                        if (link.children) {
-                          toggleExpand(link.label)
-                        } else {
-                          handleNavigation(link.path || '')
-                        }
-                      }}
-                      className={classes.navLink}
-                      data-active={isActive.toString()}
-                    >
-                      <ThemeIcon size={28} variant="light" color={isActive ? 'blue' : 'gray'}>
-                        {link.icon}
-                      </ThemeIcon>
-                      <Text size="sm" fw={isActive ? 600 : 400} style={{ flex: 1 }}>
-                        {link.label}
-                      </Text>
-                      {link.children && (
-                        <ChevronDown
-                          size={18}
-                          style={{
-                            transform: isExpanded ? 'rotate(0deg)' : 'rotate(-90deg)',
-                            transition: 'transform 200ms ease'
-                          }}
-                        />
-                      )}
-                    </UnstyledButton>
-
-                    {link.children && (
-                      <Collapse in={isExpanded}>
-                        <Stack gap={0} pl="md" py="xs">
-                          {link.children.map((subLink) => {
-                            const isSubActive = currentPath === subLink.path
-                            return (
-                              <UnstyledButton
-                                key={subLink.path}
-                                onClick={() => handleNavigation(subLink.path)}
-                                style={{
-                                  padding: '8px 12px',
-                                  borderRadius: '6px',
-                                  backgroundColor: isSubActive ? 'var(--mantine-color-blue-0)' : 'transparent',
-                                  border: isSubActive ? '2px solid var(--mantine-color-blue-6)' : '2px solid transparent',
-                                  transition: 'all 150ms ease',
-                                  cursor: 'pointer',
-                                  textAlign: 'left'
-                                }}
-                              >
-                                <Text
-                                  size="sm"
-                                  fw={isSubActive ? 600 : 400}
-                                  c={isSubActive ? 'blue' : 'inherit'}
-                                >
-                                  {subLink.label}
-                                </Text>
-                              </UnstyledButton>
-                            )
-                          })}
-                        </Stack>
-                      </Collapse>
-                    )}
-                  </div>
-                )
-              })
+              // Expanded view - full (recursively nested) menu
+              filteredNavigationData.map((link) => renderNavItem(link, 0))
             )}
           </Box>
         </ScrollArea>
